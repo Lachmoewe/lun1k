@@ -6,10 +6,14 @@
 #include "libs/armmath.h"
 //#include "lib/sektor.h"
 
-#define MAXITER 150
+uint8_t MAXITER=50;   //150 works well for our maximum zoomlevel
 #define RADIUS 4
 #define ZOOMSPEED 0.99
 #define INTERESTINGPOINTS 4
+
+
+
+
 static float Maxx;             // Rightmost Real point of plane to be displayed
 static float Minx;            // Leftmost Real point
 static float Maxy;             // Uppermost Imaginary point
@@ -49,10 +53,11 @@ static void init(void)
 				Minx=-2;
 				Maxy=1.25;
 				Miny=-1.25;
-				PoI_num=200;
 				zoomlevel = 0;
+				srand(time(NULL));
+				PoI_num = rand() % INTERESTINGPOINTS;
 }
-static void mandel(uint8_t xin, uint8_t yin, uint8_t *r, uint8_t *g, uint8_t *b)
+static uint8_t getIter(uint8_t xin, uint8_t yin)
 {
 				float x=0;
 				float y=0;		
@@ -67,44 +72,38 @@ static void mandel(uint8_t xin, uint8_t yin, uint8_t *r, uint8_t *g, uint8_t *b)
 								k++;
 								if ( (x*x+y*y)>RADIUS ) break; 
 				} 
-
-				uint8_t color = k;
-				if (color>15) color=color%15;
-				if (k>MAXITER) {
-								*r=0;
-								*g=0;
-								*b=0;
-				} else {
-								*r=colors[color][0];
-								*g=colors[color][1];
-								*b=colors[color][2];
-				}
+				return k;
 }
-static void PoI_gen() {
-				if(PoI_num >= INTERESTINGPOINTS){
-								srand(time(NULL));
-								PoI_num = rand() % INTERESTINGPOINTS;
-				}
+static uint8_t tick(void) {
+				
 				if (zoomlevel>1042) {
 								init();
 				}
-}
-static uint8_t tick(void) {
-				PoI_gen();
+
+				MAXITER=(zoomlevel/7)+20;
 				dx=(Maxx-Minx)/LED_HEIGHT;
 				dy=(Maxy-Miny)/LED_WIDTH;
 
 				time_t start = clock();
 
+				uint8_t color;
 				uint8_t x,y,r,g,b;
-				uint8_t *rp = &r; 
-				uint8_t *gp = &g;
-				uint8_t *bp = &b;
+
 				for(y = 0; y < LED_HEIGHT; y++) 
 				{
 								for(x = 0; x < LED_WIDTH; x++) 
 								{
-												mandel(x,y,rp,gp,bp);
+												color =	getIter(x,y);
+												if (color>MAXITER) {
+																r=0;
+																g=0;
+																b=0;
+												} else {
+																color=color%15;
+																r=colors[color][0];
+																g=colors[color][1];
+																b=colors[color][2];
+												} 
 												setLedXY(x,y,r,g,b);
 								}
 				}
@@ -113,6 +112,7 @@ static uint8_t tick(void) {
 				Maxy=Maxy*ZOOMSPEED+PoI[PoI_num][1]*(1-ZOOMSPEED);
 				Miny=Miny*ZOOMSPEED+PoI[PoI_num][1]*(1-ZOOMSPEED);
 				printf("Zoomlevel: %d\t",zoomlevel++);
+				printf("MAXITER: %d\t",MAXITER);
 				time_t end=clock();
 				printf("Rechenzeit: %ld\n",(end-start));
 				return 0;
