@@ -9,7 +9,7 @@
 #define MAXITER 150
 #define RADIUS 4
 #define ZOOMSPEED 0.99
-#define INTERESTINGPOINTS 2
+#define INTERESTINGPOINTS 4
 static float Maxx;             // Rightmost Real point of plane to be displayed
 static float Minx;            // Leftmost Real point
 static float Maxy;             // Uppermost Imaginary point
@@ -18,7 +18,9 @@ static uint8_t PoI_num;
 static uint32_t zoomlevel;
 static float PoI[INTERESTINGPOINTS][2]={
 				{-1.7864402559762,0},
-				{-0.74977879167273,0.061208886981615}
+				{-0.74977879167273,0.061208886981615},
+				{-0.10065324543004,0.95635515294465},
+				{-1.2539214922673,-0.38266971143805},
 };
 float dx=0;
 float dy=0;
@@ -43,23 +45,22 @@ static int colors[15][3] = {
 
 static void init(void)
 {
-				Maxx=0.5;             // Rightmost Real point of plane to be displayed
-				Minx=-2;            // Leftmost Real point
-				Maxy=1.25;             // Uppermost Imaginary point
-				Miny=-1.25;            // Lowermost Imaginary point
+				Maxx=0.5;
+				Minx=-2;
+				Maxy=1.25;
+				Miny=-1.25;
 				PoI_num=200;
 				zoomlevel = 0;
 }
 static void mandel(uint8_t xin, uint8_t yin, uint8_t *r, uint8_t *g, uint8_t *b)
 {
 				float x=0;
-				float y=0;		//converting from pixels to points
+				float y=0;		
 				float xnew=0;
 				uint8_t k=0;
 				float offsetx = xin*dx+Minx;
 				float offsety = Maxy-yin*dy;
 				while(k<=MAXITER) {
-								//The Mandelbrot Function Z=Z*Z+c into x and y parts
 								xnew=x*x-y*y + offsetx;
 								y=2*x*y   + offsety;
 								x=xnew;
