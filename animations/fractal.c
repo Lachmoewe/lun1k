@@ -99,7 +99,7 @@ static uint8_t tick(void) {
 																g=0;
 																b=0;
 												} else {
-																color=color%15;
+																color=(color+zoomlevel)%15;
 																r=colors[color][0];
 																g=colors[color][1];
 																b=colors[color][2];
