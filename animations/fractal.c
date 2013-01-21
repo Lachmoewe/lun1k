@@ -71,8 +71,8 @@ static uint8_t getIter(uint8_t xin, uint8_t yin) {
 		xnew= xsqrd - ysqrd + offsetx;
 		y = 2*x*y + offsety;
 		x = xnew;
-        xsqrd = x*x; //can the f4 do x*x+y*y in one step??? if not, this is 4 clocks faster per iter...
-        ysqrd = y*y;
+        xsqrd = x*x; //can the f4 do x*x+y*y in one step??? 
+        ysqrd = y*y; //if not, this is 4 clocks faster per iteration...
 		k++;
 		if ( (xsqrd+ysqrd) > RADIUS ) break; 
 	} 
@@ -80,9 +80,9 @@ static uint8_t getIter(uint8_t xin, uint8_t yin) {
 }
 static uint8_t tick(void) {
 				
-	if (zoomlevel > 1042) {
+	/*if (zoomlevel > 1042) {
 		init();
-	}
+	}*/
 
 	MAXITER = (zoomlevel/7) + 20;
 	dx = (Maxx-Minx)/LED_HEIGHT;
@@ -134,7 +134,7 @@ static void deinit(void)
 
 static void constructor(void) CONSTRUCTOR_ATTRIBUTES
 void constructor(void) {
-	registerAnimation(init,tick,deinit, 4, 1638); 
+	registerAnimation(init,tick,deinit, 4, 1232); 
 }
 
 
