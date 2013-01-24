@@ -4,7 +4,7 @@
 #include <math.h>
 #include <time.h>
 #include "libs/armmath.h"
-//#include "lib/sektor.h"
+#include "libs/text.h"
 
 uint8_t MAXITER=50;   //150 works well for our maximum zoomlevel
 #define RADIUS 4
@@ -53,7 +53,7 @@ static void init(void) {
 	Maxy = 1.25;
 	Miny = -1.25;
 	zoomlevel = 0;
-	srand(time(NULL));
+	//srand(time(NULL));
 	PoI_num = rand() % INTERESTINGPOINTS;
 }
 static uint8_t getIter(uint8_t xin, uint8_t yin) {
@@ -80,15 +80,15 @@ static uint8_t getIter(uint8_t xin, uint8_t yin) {
 }
 static uint8_t tick(void) {
 				
-	/*if (zoomlevel > 1042) {
+	if (zoomlevel > 1100) {
 		init();
-	}*/
+	}
 
 	MAXITER = (zoomlevel/7) + 20;
 	dx = (Maxx-Minx)/LED_HEIGHT;
 	dy = (Maxy-Miny)/LED_WIDTH;
 
-	time_t start = clock();
+	//time_t start = clock();
 
 	uint8_t color;
 	uint8_t x,y,r,g,b;
@@ -101,7 +101,7 @@ static uint8_t tick(void) {
 				g=0;
 				b=0;
 			} else {
-				color=(color/*+zoomlevel*/)%15;
+				color=(color+zoomlevel)%15;
 				r=colors[color][0];
 				g=colors[color][1];
 				b=colors[color][2];
@@ -114,12 +114,14 @@ static uint8_t tick(void) {
 	Maxy = Maxy*ZOOMSPEED + PoI[PoI_num][1]*(1-ZOOMSPEED);
 	Miny = Miny*ZOOMSPEED + PoI[PoI_num][1]*(1-ZOOMSPEED);
                 
-	printf("Zoomlevel: %d\t",zoomlevel++);
-	printf("MAXITER: %d\t",MAXITER);
+	//printf("Zoomlevel: %d\t",zoomlevel++);
+	//printf("MAXITER: %d\t",MAXITER);
                 
-	time_t end=clock();
-	printf("Rechenzeit: %ld\n",(end-start));
-                
+	//time_t end=clock();
+	//printf("Rechenzeit: %ld\n",(end-start));
+  draw_number_8x6(3,3,zoomlevel,4,' ',0,0,0);             
+  draw_number_8x6(2,2,zoomlevel,4,' ',255,255,255);             
+	zoomlevel++;
 	return 0;
 }
 

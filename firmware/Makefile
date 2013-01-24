@@ -26,7 +26,8 @@ SRC=$(wildcard  *.c libs/*.c libs/zint/*.c) \
 	../animations/lib/tetris.c \
 	../animations/lib/grid.c \
 	../animations/plasma_bigsin.c \
-	../animations/plasma_weed.c
+	../animations/plasma_weed.c \
+	../animations/fractal.c
 
 
 ASRC=core/startup_stm32f4xx.s
@@ -97,6 +98,6 @@ clean:
 #########################################################################
 
 flash: all
-	dfu-util -a 0 -s 0x08000000 -D $(PROJECT).bin -R
+	dfu-util -d 0483:df11 -a 0 -s 0x08000000 -D $(PROJECT).bin -R
 
 .PHONY : clean all flash
